@@ -263,3 +263,19 @@ void loop(void)
 
   delay(BNO055_SAMPLERATE_DELAY_MS);
 }
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(2, INPUT);
+  pinMode(3, INPUT);
+  pinMode(4, INPUT);
+}
+
+void loop() {
+  Serial.print(analogRead(2));
+  Serial.print("   |   ");
+  Serial.print(analogRead(3));
+  Serial.print("   |   voltmes: ");
+  Serial.println(analogRead(4));
+  delay(100);
+}
