@@ -36,7 +36,7 @@ void setup() {
   pinMode(2, INPUT);
   pinMode(3, INPUT);
   pinMode(4, INPUT);
-
+  pinMode(9, INPUT_PULLUP);
   tft.init(240, 280);  // Init ST7789 display 240x240 pixel
   tft.setRotation(1);
   tft.fillScreen(ST77XX_BLACK);
@@ -81,7 +81,7 @@ void setup() {
 }
 
 void loop() {
-  
+  /*
   int16_t distance;
 
   if (vl53.dataReady()) {
@@ -114,14 +114,16 @@ void loop() {
   Serial.print((float)event.orientation.z);
   Serial.println(F(""));
 
+*/
 
-/*
   Serial.print(analogRead(2));
   Serial.print("   |   ");
   Serial.print(analogRead(3));
   Serial.print("   |   voltmes: ");
-  Serial.println(analogRead(4));
-  */
+  Serial.print(analogRead(4));
+  Serial.print("   |    ");
+  Serial.println(digitalRead(9));
+  
   //messure_volt();
   delay(BNO055_SAMPLERATE_DELAY_MS);
 }
@@ -135,8 +137,8 @@ void messure_volt(){
   Serial.println(analogRead(4));
 }
 
-void handle_buttons(int distance){
-  if
+void handle_buttons(){
+  
 }
 
 void handel_buttons();
