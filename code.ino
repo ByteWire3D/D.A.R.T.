@@ -28,7 +28,8 @@ Adafruit_VL53L1X vl53 = Adafruit_VL53L1X(XSHUT_PIN, IRQ_PIN);
 int delay_time_l = 100;
 int delay_time_d = 50;
 
-
+float batt_volt;
+float batt_percent;
 void setup() {
   Serial.begin(115200);
 
@@ -80,6 +81,7 @@ void setup() {
 }
 
 void loop() {
+  
   int16_t distance;
 
   if (vl53.dataReady()) {
@@ -98,11 +100,12 @@ void loop() {
     // data is read out, time for another reading!
     vl53.clearInterrupt();
   }
+  
 
   sensors_event_t event;
   bno.getEvent(&event);
 
-  /* The processing sketch expects data as roll, pitch, heading */
+  // The processing sketch expects data as roll, pitch, heading 
   Serial.print(F("Orientation: "));
   Serial.print((float)event.orientation.x);
   Serial.print(F(" "));
@@ -112,14 +115,31 @@ void loop() {
   Serial.println(F(""));
 
 
+/*
   Serial.print(analogRead(2));
   Serial.print("   |   ");
   Serial.print(analogRead(3));
   Serial.print("   |   voltmes: ");
   Serial.println(analogRead(4));
+  */
+  //messure_volt();
   delay(BNO055_SAMPLERATE_DELAY_MS);
 }
+void messure_volt(){
+  batt_volt = map(analogRead(4), 1200, 2940, 0, 4.2);
+  batt_percent = map(analogRead(4), 1200, 2940, 0, 100);
+  Serial.print(batt_volt);
+  Serial.print("    |   ");
+  Serial.print(batt_percent);
+  Serial.print("   |   voltmes: ");
+  Serial.println(analogRead(4));
+}
 
+void handle_buttons(int distance){
+  if
+}
+
+void handel_buttons();
 void dart_ani() {
   tft.setCursor(60, 100);
   tft.setTextSize(4);
