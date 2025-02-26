@@ -16,6 +16,17 @@
 #define TFT_RST 21  // define reset pin, or set to -1 and connect to Arduino RESET pin
 #define BNO055_SAMPLERATE_DELAY_MS (100)
 
+#define right_up 1
+#define right_down 2
+#define left_up 3
+#define left_down 4
+
+#define right_buttons 2
+#define left_buttons 3
+bool right_up_wasdown = false;
+bool right_down_wasdown = false;
+bool left_up_wasdown = false;
+bool left_down_wasdown = false;
 // Check I2C device address and correct line below (by default address is 0x29 or 0x28)
 //                                   id, address
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
@@ -33,8 +44,8 @@ float batt_percent;
 void setup() {
   Serial.begin(115200);
 
-  pinMode(2, INPUT);
-  pinMode(3, INPUT);
+  pinMode(right_buttons, INPUT);
+  pinMode(left_buttons, INPUT);
   pinMode(4, INPUT);
   pinMode(9, INPUT_PULLUP);
   tft.init(240, 280);  // Init ST7789 display 240x240 pixel
@@ -116,20 +127,20 @@ void loop() {
 
 */
 
-  Serial.print(analogRead(2));
-  Serial.print("   |   ");
-  Serial.print(analogRead(3));
-  Serial.print("   |   voltmes: ");
-  Serial.print(analogRead(4));
-  Serial.print("   |    ");
-  Serial.println(digitalRead(9));
-  
+  // Serial.print(analogRead(right_buttons));
+  // Serial.print("   |   ");
+  // Serial.print(analogRead(left_buttons));
+  //Serial.print("   |   voltmes: ");
+  //Serial.println(analogRead(4));
+
+  handle_buttons();
+
   //messure_volt();
   delay(BNO055_SAMPLERATE_DELAY_MS);
 }
-void messure_volt(){
-  batt_volt = map(analogRead(4), 1200, 2940, 0, 4.2);
-  batt_percent = map(analogRead(4), 1200, 2940, 0, 100);
+void messure_volt() {
+  batt_volt = map(analogRead(4), 0, 3000, 0, 4.2);
+  batt_percent = map(analogRead(4), 0, 3000, 0, 100);
   Serial.print(batt_volt);
   Serial.print("    |   ");
   Serial.print(batt_percent);
@@ -137,11 +148,93 @@ void messure_volt(){
   Serial.println(analogRead(4));
 }
 
-void handle_buttons(){
-  
+void handle_buttons() {
+  if (Button_IsDown(right_up)) {
+    right_up_wasdown = true;
+  }
+  if (Button_IsDown(right_down)) {
+    right_down_wasdown = true;
+  }
+  if (Button_IsDown(left_up)) {
+    left_up_wasdown = true;
+  }
+  if (Button_IsDown(left_down)) {
+    left_down_wasdown = true;
+  }
+
+  if (right_up_wasdown && Button_IsUP(right_up)) {
+    right_up_wasdown = false;
+    Serial.println("right up was pressed!");
+  }
+  if (right_down_wasdown && Button_IsUP(right_down)) {
+    right_down_wasdown = false;
+    Serial.println("right down was pressed!");
+  }
+  if (left_up_wasdown && Button_IsUP(left_up)) {
+    left_up_wasdown = false;
+    Serial.println("left up was pressed!");
+  }
+  if (left_down_wasdown && Button_IsUP(left_down)) {
+    left_down_wasdown = false;
+    Serial.println("left down was pressed!");
+  }
 }
 
-void handel_buttons();
+bool Button_IsDown(int button) {
+  if (button == right_up) {
+    //right up
+    if (analogRead(right_buttons) == 4095) {
+      return true;
+    }
+  }
+  if (button == right_down) {
+    //right down
+    if (analogRead(right_buttons) >= 2000 && analogRead(right_buttons) <= 2300) {
+      return true;
+    }
+  }
+  if (button == left_up) {
+    //left up
+    if (analogRead(left_buttons) == 4095) {
+      return true;
+    }
+  }
+  if (button == left_down) {
+    //left down
+    if (analogRead(left_buttons) <= 250) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool Button_IsUP(int button) {
+  if (button == right_up) {
+    //right up
+    if (analogRead(right_buttons) <= 2000) {
+      return true;
+    }
+  }
+  if (button == right_down) {
+    //right down
+    if (analogRead(right_buttons) <= 2000) {
+      return true;
+    }
+  }
+  if (button == left_up) {
+    //left up
+    if (analogRead(left_buttons) > 250 && analogRead(left_buttons) < 4095) {
+      return true;
+    }
+  }
+  if (button == left_down) {
+    //left down
+    if (analogRead(left_buttons) > 250 && analogRead(left_buttons) < 4095) {
+      return true;
+    }
+  }
+  return false;
+}
 void dart_ani() {
   tft.setCursor(60, 100);
   tft.setTextSize(4);
