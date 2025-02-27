@@ -163,8 +163,10 @@ float L = distance * cos(pitch_rad);
 }
 
 
-void vert_afstand(float dis, float p){
-   
+float vert_afstand(float dis, float p){
+  float pitch_rad = pitch * (PI / 180.0);
+  float L = distance * cos(pitch_rad);
+  return L;
 }
 
 
