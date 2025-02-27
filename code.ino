@@ -63,6 +63,8 @@ float roll;
 float pitch;
 float yaw;
 
+float recorded_pitch;
+
 int temprature = 0;
 bool update = true;
 void setup() {
@@ -89,7 +91,6 @@ void setup() {
     while (1)
       ;
   }
-
 
   /* Use external crystal for better accuracy */
   bno.setExtCrystalUse(true);
@@ -174,7 +175,6 @@ void loop() {
 }
 void messure_volt() {
   batt_volt = (4.11 / 2860) * analogRead(4);
-
   batt_volt_samples[sample_index] = batt_volt;
   sample_index = (sample_index + 1) % NUM_SAMPLES;  // Loop back after filling the array
 
@@ -221,9 +221,6 @@ void show_display() {
   tft.print("Live");
 }
 
-void ver_hor_tot(int mode, distace){
-  
-}
 void live_mes() {
   drawHeader("Live Measurements", ST77XX_WHITE, ST77XX_RED);
   int16_t distance;

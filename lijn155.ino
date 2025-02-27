@@ -41,6 +41,8 @@ int delay_time_d = 50;
 
 float batt_volt;
 float batt_percent;
+
+float x = 1;
 void setup() {
   Serial.begin(115200);
 
@@ -168,9 +170,6 @@ float vert_afstand(float dis, float p){
   float L = distance * cos(pitch_rad);
   return L;
 }
-
-
-
 
 void messure_volt(){
   batt_volt = map(analogRead(4), 1200, 2940, 0, 4.2);
