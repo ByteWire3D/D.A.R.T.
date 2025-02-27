@@ -159,7 +159,7 @@ float L = distance * cos(pitch_rad);
   Serial.println("Loodrechte afstand: ");
   Serial.print(L)
   // hoeken tussen twee muren kan met heading, maar dan moet het apparaat in dezelfde positie blijven en hij mag niet in de knooi raken met de pitch en roll
-  vert_afstand(distance, pitch);
+  float afstand = vert_afstand(distance, pitch);
 }
 
 
