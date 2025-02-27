@@ -162,7 +162,9 @@ float L = distance * cos(pitch_rad);
 }
 
 
-
+void vert_afstand(float distance, float pitch){
+   
+}
 
 
 
