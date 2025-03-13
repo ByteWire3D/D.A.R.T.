@@ -652,36 +652,45 @@ void draw_options_distance() {
     uint8_t color = ST77XX_RED;
   }
   if (menu_pos == 1) {
-    tft.fillRect(x, 236, calculateLength("all"), 3, color);
-    x += calculateLength("all|");
-    tft.fillRect(x, 236, calculateLength("distance"), 3, ST77XX_BLACK);
-    x += calculateLength("Distance|");
-    tft.fillRect(x, 236, calculateLength("angle"), 3, ST77XX_BLACK);
+    tft.fillRect(x, 236, calculateLength("Auto"), 3, color);
+    x += calculateLength("Auto|");
+    tft.fillRect(x, 236, calculateLength("Vert"), 3, ST77XX_BLACK);
+    x += calculateLength("Vert|");
+    tft.fillRect(x, 236, calculateLength("Hori"), 3, ST77XX_BLACK);
+    x += calculateLength("Hori|");
+    tft.fillRect(x, 236, calculateLength("Abs"), 3, ST77XX_BLACK);
   }
   if (menu_pos == 2) {
-    tft.fillRect(x, 236, calculateLength("all"), 3, ST77XX_BLACK);
-    x += calculateLength("all|");
-    tft.fillRect(x, 236, calculateLength("distance"), 3, color);
-    x += calculateLength("Distance|");
-    tft.fillRect(x, 236, calculateLength("angle"), 3, ST77XX_BLACK);
+    tft.fillRect(x, 236, calculateLength("Auto"), 3, ST77XX_BLACK);
+    x += calculateLength("Auto|");
+    tft.fillRect(x, 236, calculateLength("Vert"), 3, color);
+    x += calculateLength("Vert|");
+    tft.fillRect(x, 236, calculateLength("Hori"), 3, ST77XX_BLACK);
+    x += calculateLength("Hori|");
+    tft.fillRect(x, 236, calculateLength("Abs"), 3, ST77XX_BLACK);
   }
   if (menu_pos == 3) {
-    tft.fillRect(x, 236, calculateLength("all"), 3, ST77XX_BLACK);
-    x += calculateLength("all|");
-    tft.fillRect(x, 236, calculateLength("distance"), 3, ST77XX_BLACK);
-    x += calculateLength("Distance|");
-    tft.fillRect(x, 236, calculateLength("angle"), 3, color);
+    tft.fillRect(x, 236, calculateLength("Auto"), 3, ST77XX_BLACK);
+    x += calculateLength("Auto|");
+    tft.fillRect(x, 236, calculateLength("Vert"), 3, ST77XX_BLACK);
+    x += calculateLength("Vert|");
+    tft.fillRect(x, 236, calculateLength("Hori"), 3, color);
+    x += calculateLength("Hori|");
+    tft.fillRect(x, 236, calculateLength("Abs"), 3, ST77XX_BLACK);
   }
   if (menu_pos == 4) {
-    tft.fillRect(x, 236, calculateLength("all"), 3, ST77XX_BLACK);
-    x += calculateLength("all|");
-    tft.fillRect(x, 236, calculateLength("distance"), 3, ST77XX_BLACK);
-    x += calculateLength("Distance|");
-    tft.fillRect(x, 236, calculateLength("angle"), 3, color);
+    tft.fillRect(x, 236, calculateLength("Auto"), 3, ST77XX_BLACK);
+    x += calculateLength("Auto|");
+    tft.fillRect(x, 236, calculateLength("Vert"), 3, ST77XX_BLACK);
+    x += calculateLength("Vert|");
+    tft.fillRect(x, 236, calculateLength("Hori"), 3, ST77XX_BLACK);
+    x += calculateLength("Hori|");
+    tft.fillRect(x, 236, calculateLength("Abs"), 3, color);
   }
-  tft.print("All|");
-  tft.print("Distance|");
-  tft.print("Angle");
+  tft.print("Auto|");
+  tft.print("Vert|");
+  tft.print("Hori|");
+  tft.print("Abs");
 }
 void drawHeader(const char* headerText, uint16_t color, uint16_t barColor) {
   int headerPos = (280 - calculateLength(headerText)) / 2;  // centers header
