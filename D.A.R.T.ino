@@ -36,12 +36,7 @@ enum pageType {
   horizon,
   absolute,
   angle,
-  all_angle,
-  pitch_menu,
-  roll_menu,
-  yaw_menu,
   live,
-  all_live,
   distance_live,
   angle_live,
 };
@@ -149,14 +144,8 @@ void loop() {
     case vertical: break;
     case horizon: break;
     case absolute: break;
-    case angle: break;
-    case all_angle: break;
-    case pitch_menu: break;
-    case roll_menu: break;
-    case yaw_menu: break;
+    case angle: angle_diff(); break;
     case live: live_mes(); break;
-    case distance_live: break;
-    case angle_live: break;
   }
 }
 void messure_volt() {
@@ -215,6 +204,16 @@ void mode_menu() {
   if (left_up_wasdown && Button_IsUP(left_up)) {
     left_up_wasdown = false;
     update = true;
+    if (menu_pos == 1) {
+      current_Page = distance;
+      menu_pos = 1;
+      tft.fillScreen(ST77XX_BLACK);
+    }
+    if (menu_pos == 2) {
+      current_Page = angle;
+      menu_pos = 1;
+      tft.fillScreen(ST77XX_BLACK);
+    }
     if (menu_pos == 3) {
       current_Page = live;
       menu_pos = 1;
@@ -282,6 +281,36 @@ void handle_up_down(int menu_size) {
     update = true;
   }
 }
+
+void angle_diff(){
+   static uint32_t lastTime = 0;
+  int updateHz = 30;
+  int updateTime = 1000 / updateHz;
+  if (millis() - lastTime >= updateTime) {
+    lastTime = millis();
+    messure_volt();
+    if (update) {
+      drawHeader("Angle menu", ST77XX_WHITE, ST77XX_RED);
+    }
+  }
+  if (Button_IsDown(left_up)) {
+    left_up_wasdown = true;
+  }
+  if (Button_IsDown(left_down)) {
+    left_down_wasdown = true;
+  }
+
+
+  if (left_up_wasdown && Button_IsUP(left_up)) {
+    left_up_wasdown = false;
+    update = true;
+  }
+  if (left_down_wasdown && Button_IsUP(left_down)) {
+    left_down_wasdown = false;
+    update = true;
+    Serial.println("cancel pressed!");
+  }
+}
 void ver_hor_tot(int mode, int distace) {
 }
 void live_mes() {
@@ -292,38 +321,14 @@ void live_mes() {
     lastTime = millis();
     if (update) {
       drawHeader("Live Measurements", ST77XX_WHITE, ST77XX_RED);
-      draw_options_live();
     }
     messure_volt();
     get_draw_live();
-  }
-  handle_up_down(3);
-  if (Button_IsDown(left_up)) {
-    left_up_wasdown = true;
   }
   if (Button_IsDown(left_down)) {
     left_down_wasdown = true;
   }
 
-  if (left_up_wasdown && Button_IsUP(left_up)) {
-    left_up_wasdown = false;
-    update = true;
-    if (menu_pos == 1) {
-      current_Page = all_live;
-      menu_pos = 1;
-      tft.fillScreen(ST77XX_BLACK);
-    }
-    if (menu_pos == 2) {
-      current_Page = distance_live;
-      menu_pos = 2;
-      tft.fillScreen(ST77XX_BLACK);
-    }
-    if (menu_pos == 3) {
-      current_Page = angle_live;
-      menu_pos = 3;
-      tft.fillScreen(ST77XX_BLACK);
-    }
-  }
   if (left_down_wasdown && Button_IsUP(left_down)) {
     left_down_wasdown = false;
     update = true;
@@ -394,16 +399,13 @@ void get_draw_live() {
   tft.print(yaw);
   tft.print("     ");
 }
-void draw_options_live() {
+void draw_options_distance() {
   int x = (280 - calculateLength("all|") - calculateLength("Distance|") - calculateLength("angle")) / 2;
   int y = 220;
 
   tft.setCursor(x, y);
   tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
   if (menu_pos == 1) {
-    if(current_Page = all_live){
-      
-    }
     tft.fillRect(x, 236, calculateLength("all"), 3, ST77XX_RED);
     x += calculateLength("all|");
     tft.fillRect(x, 236, calculateLength("distance"), 3, ST77XX_BLACK);
