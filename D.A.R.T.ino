@@ -315,11 +315,21 @@ void angle_diff(){
     left_up_wasdown = false;
     update = true;
     sto_count +=1;
-    if
+    if(sto_count == 1){
+    roll_sto1 = roll;
+    pitch_sto1 = pitch;
+    yaw_sto1 = yaw;
+    }
+    if(sto_count == 2){
+      roll_sto2 = roll;
+      pitch_sto2 = pitch;
+      yaw_sto2 = yaw;
+      }
   }
   if (left_down_wasdown && Button_IsUP(left_down)) {
     left_down_wasdown = false;
     update = true;
+    sto_count = 0;
     Serial.println("cancel pressed!");
   }
 }
