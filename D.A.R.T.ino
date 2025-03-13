@@ -96,6 +96,7 @@ bool update = true;
 int menu_pos = 1;
 
 bool selection_state = false;
+uint16_t color;
 void setup() {
   Serial.begin(115200);
 
@@ -295,7 +296,7 @@ void handle_up_down(int menu_size) {
   }
 }
 
-void auto_vh_menu(){
+void auto_vh_menu() {
   static uint32_t lastTime = 0;
   int updateHz = 30;
   int updateTime = 1000 / updateHz;
@@ -307,7 +308,7 @@ void auto_vh_menu(){
       draw_options_distance();
     }
   }
-  if(selection_state){
+  if (selection_state) {
     handle_up_down(4);
   }
   if (Button_IsDown(left_up)) {
@@ -320,29 +321,29 @@ void auto_vh_menu(){
   if (left_up_wasdown && Button_IsUP(left_up)) {
     left_up_wasdown = false;
     update = true;
-    if(!selection_state){
+    if (!selection_state) {
       selection_state = true;
       return;
     }
-    if(selection_state == true && pos == 1){
+    if (selection_state == true && menu_pos == 1) {
       current_Page = auto_vh;
       menu_pos = 1;
       tft.fillScreen(ST77XX_BLACK);
       selection_state = false;
     }
-    if(selection_state == true && pos == 2){
+    if (selection_state == true && menu_pos == 2) {
       current_Page = vertical;
       menu_pos = 2;
       tft.fillScreen(ST77XX_BLACK);
       selection_state = false;
     }
-    if(selection_state == true && pos == 3){
+    if (selection_state == true && menu_pos == 3) {
       current_Page = horizon;
       menu_pos = 3;
       tft.fillScreen(ST77XX_BLACK);
       selection_state = false;
     }
-    if(selection_state == true && pos == 4){
+    if (selection_state == true && menu_pos == 4) {
       current_Page = absolute;
       menu_pos = 4;
       tft.fillScreen(ST77XX_BLACK);
@@ -352,7 +353,7 @@ void auto_vh_menu(){
   if (left_down_wasdown && Button_IsUP(left_down)) {
     left_down_wasdown = false;
     update = true;
-    if(selection_state){
+    if (selection_state) {
       selection_state = false;
       return;
     }
@@ -362,8 +363,8 @@ void auto_vh_menu(){
   }
 }
 
-void angle_diff(){
-   static uint32_t lastTime = 0;
+void angle_diff() {
+  static uint32_t lastTime = 0;
   int updateHz = 30;
   int updateTime = 1000 / updateHz;
   if (millis() - lastTime >= updateTime) {
@@ -393,24 +394,23 @@ void angle_diff(){
   if (right_up_wasdown && Button_IsUP(right_up)) {
     right_up_wasdown = false;
     update = true;
-    sto_count +=1;
-    if(sto_count == 1){
-    roll_sto1 = roll;
-    pitch_sto1 = pitch;
-    yaw_sto1 = yaw;
+    sto_count += 1;
+    if (sto_count == 1) {
+      roll_sto1 = roll;
+      pitch_sto1 = pitch;
+      yaw_sto1 = yaw;
     }
-    if(sto_count == 2){
+    if (sto_count == 2) {
       roll_sto2 = roll;
       pitch_sto2 = pitch;
       yaw_sto2 = yaw;
     }
-    if(sto_count == 3){
-        sto_count = 0;
-      }
-  
+    if (sto_count == 3) {
+      sto_count = 0;
+    }
   }
   if (right_down_wasdown && Button_IsUP(right_down)) {
-    right_down_wasdown = false
+    right_down_wasdown = false;
     sto_count = 0;
     update = true;
   }
@@ -418,25 +418,28 @@ void angle_diff(){
   if (left_up_wasdown && Button_IsUP(left_up)) {
     left_up_wasdown = false;
     update = true;
-    sto_count +=1;
-    if(sto_count == 1){
-    roll_sto1 = roll;
-    pitch_sto1 = pitch;
-    yaw_sto1 = yaw;
+    sto_count += 1;
+    if (sto_count == 1) {
+      roll_sto1 = roll;
+      pitch_sto1 = pitch;
+      yaw_sto1 = yaw;
     }
-    if(sto_count == 2){
+    if (sto_count == 2) {
       roll_sto2 = roll;
       pitch_sto2 = pitch;
       yaw_sto2 = yaw;
-      }
-    if(sto_count == 3){
+    }
+    if (sto_count == 3) {
       sto_count = 0;
     }
   }
   if (left_down_wasdown && Button_IsUP(left_down)) {
     left_down_wasdown = false;
     update = true;
-    sto_count = 0;
+    if (sto_count != 0) {
+      sto_count = 0;
+      return;
+    }
     current_Page = modemenu;
     menu_pos = 2;
     tft.fillScreen(ST77XX_BLACK);
@@ -532,7 +535,7 @@ void get_draw_live() {
   tft.print("     ");
 }
 
-void get_draw_live_angle(){
+void get_draw_live_angle() {
   sensors_event_t event;
   bno.getEvent(&event);
 
@@ -545,38 +548,38 @@ void get_draw_live_angle(){
   int x = 20;
   int y = 36;
 
-  if(sto_count == 0){
-  tft.setCursor(x, y);
-  tft.setTextSize(2);
-  tft.print("Pitch: ");
-  x = 20 + calculateLength("Pitch: ");
-  tft.setCursor(x, y);
-  tft.print(pitch);
-  tft.print("        ");
-  y += 24;
-  x = 20;
-  tft.setCursor(x, y);
-  tft.setTextSize(2);
-  tft.print("Roll: ");
-  x = 20 + calculateLength("Roll: ");
-  tft.setCursor(x, y);
-  tft.print(roll);
-  tft.print("        ");
-  y += 24;
-  x = 20;
-  tft.setCursor(x, y);
-  tft.setTextSize(2);
-  tft.print("Yaw: ");
-  x = 20 + calculateLength("Yaw: ");
-  tft.setCursor(x, y);
-  tft.print(yaw);
-  tft.print("        ");
+  if (sto_count == 0) {
+    tft.setCursor(x, y);
+    tft.setTextSize(2);
+    tft.print("Pitch: ");
+    x = 20 + calculateLength("Pitch: ");
+    tft.setCursor(x, y);
+    tft.print(pitch);
+    tft.print("           ");
+    y += 24;
+    x = 20;
+    tft.setCursor(x, y);
+    tft.setTextSize(2);
+    tft.print("Roll: ");
+    x = 20 + calculateLength("Roll: ");
+    tft.setCursor(x, y);
+    tft.print(roll);
+    tft.print("           ");
+    y += 24;
+    x = 20;
+    tft.setCursor(x, y);
+    tft.setTextSize(2);
+    tft.print("Yaw: ");
+    x = 20 + calculateLength("Yaw: ");
+    tft.setCursor(x, y);
+    tft.print(yaw);
+    tft.print("           ");
   }
 
-  if(sto_count == 1){
+  if (sto_count == 1) {
     diff_roll = abs(roll - roll_sto1);
     diff_pitch = abs(pitch - pitch_sto1);
-    diff_yaw = abs(yaw - yaw_sto1); 
+    diff_yaw = abs(yaw - yaw_sto1);
 
     tft.setCursor(x, y);
     tft.setTextSize(2);
@@ -604,14 +607,10 @@ void get_draw_live_angle(){
     tft.print(diff_yaw);
     tft.print("     ");
   }
-  if(sto_count == 2){
+  if (sto_count == 2) {
     diff_roll = abs(roll_sto2 - roll_sto1);
     diff_pitch = abs(pitch_sto2 - pitch_sto1);
-    diff_yaw = abs(yaw_sto2 - yaw_sto1); 
-
-    diff_roll = abs(roll - roll_sto1);
-    diff_pitch = abs(pitch - pitch_sto1);
-    diff_yaw = abs(yaw - yaw_sto1); 
+    diff_yaw = abs(yaw_sto2 - yaw_sto1);
 
     tft.setCursor(x, y);
     tft.setTextSize(2);
@@ -641,15 +640,15 @@ void get_draw_live_angle(){
   }
 }
 void draw_options_distance() {
-  int x = (280 - calculateLength("Auto|") - calculateLength("Vert|") - calculateLength("Hori|") -calculateLength("Abs")) / 2;
+  int x = (280 - calculateLength("Auto|") - calculateLength("Vert|") - calculateLength("Hori|") - calculateLength("Abs")) / 2;
   int y = 220;
 
   tft.setCursor(x, y);
   tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
-  if(selection_state){
-    uint8_t color =  ST77XX_BLUE;
-  } else{
-    uint8_t color = ST77XX_RED;
+  if (selection_state) {
+    color = ST77XX_BLUE;
+  } else {
+    color = ST77XX_RED;
   }
   if (menu_pos == 1) {
     tft.fillRect(x, 236, calculateLength("Auto"), 3, color);
@@ -835,7 +834,7 @@ void handle_buttons() {
 bool Button_IsDown(int button) {
   if (button == right_up) {
     //right up
-    if (analogRead(right_buttons) == 4095) {
+    if (analogRead(right_buttons) > 3000) {
       return true;
     }
   }
