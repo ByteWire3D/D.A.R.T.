@@ -78,6 +78,15 @@ float roll;
 float pitch;
 float yaw;
 
+int sto_count = 0;
+float roll_sto1;
+float pitch_sto1;
+float yaw_sto1;
+
+float roll_sto2;
+float pitch_sto2;
+float yaw_sto2;
+
 int temprature = 0;
 bool update = true;
 
@@ -289,6 +298,7 @@ void angle_diff(){
   if (millis() - lastTime >= updateTime) {
     lastTime = millis();
     messure_volt();
+    get_draw_live_angle();
     if (update) {
       drawHeader("Angle menu", ST77XX_WHITE, ST77XX_RED);
     }
@@ -304,6 +314,8 @@ void angle_diff(){
   if (left_up_wasdown && Button_IsUP(left_up)) {
     left_up_wasdown = false;
     update = true;
+    sto_count +=1;
+    if
   }
   if (left_down_wasdown && Button_IsUP(left_down)) {
     left_down_wasdown = false;
@@ -373,6 +385,47 @@ void get_draw_live() {
   tft.print("       ");
   y += 24;
   x = 20;
+  tft.setCursor(x, y);
+  tft.setTextSize(2);
+  tft.print("Pitch: ");
+  x = 20 + calculateLength("Pitch: ");
+  tft.setCursor(x, y);
+  tft.print(pitch);
+  tft.print("    ");
+  y += 24;
+  x = 20;
+  tft.setCursor(x, y);
+  tft.setTextSize(2);
+  tft.print("Roll: ");
+  x = 20 + calculateLength("Roll: ");
+  tft.setCursor(x, y);
+  tft.print(roll);
+  tft.print("     ");
+  y += 24;
+  x = 20;
+  tft.setCursor(x, y);
+  tft.setTextSize(2);
+  tft.print("Yaw: ");
+  x = 20 + calculateLength("Yaw: ");
+  tft.setCursor(x, y);
+  tft.print(yaw);
+  tft.print("     ");
+}
+
+void get_draw_live_angle(){
+  sensors_event_t event;
+  bno.getEvent(&event);
+
+  pitch = event.orientation.z;
+  roll = event.orientation.y;
+  yaw = event.orientation.x;
+
+  tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
+  tft.setTextSize(2);
+  int x = 20;
+  int y = 36;
+
+
   tft.setCursor(x, y);
   tft.setTextSize(2);
   tft.print("Pitch: ");
