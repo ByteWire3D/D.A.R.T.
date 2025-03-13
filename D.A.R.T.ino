@@ -30,7 +30,6 @@
 
 enum pageType {
   modemenu,
-  distance,
   auto_vh,
   vertical,
   horizon,
@@ -95,6 +94,8 @@ int temprature = 0;
 bool update = true;
 
 int menu_pos = 1;
+
+bool selection_state = false;
 void setup() {
   Serial.begin(115200);
 
@@ -152,8 +153,7 @@ void setup() {
 void loop() {
   switch (current_Page) {
     case modemenu: mode_menu(); break;
-    case distance: break;
-    case auto_vh: break;
+    case auto_vh: auto_vh_menu(); break;
     case vertical: break;
     case horizon: break;
     case absolute: break;
@@ -218,7 +218,7 @@ void mode_menu() {
     left_up_wasdown = false;
     update = true;
     if (menu_pos == 1) {
-      current_Page = distance;
+      current_Page = auto_vh;
       menu_pos = 1;
       tft.fillScreen(ST77XX_BLACK);
     }
@@ -292,6 +292,73 @@ void handle_up_down(int menu_size) {
       menu_pos = menu_size;
     }
     update = true;
+  }
+}
+
+void auto_vh_menu(){
+  static uint32_t lastTime = 0;
+  int updateHz = 30;
+  int updateTime = 1000 / updateHz;
+  if (millis() - lastTime >= updateTime) {
+    lastTime = millis();
+    messure_volt();
+    if (update) {
+      drawHeader("Distance menu", ST77XX_WHITE, ST77XX_RED);
+      draw_options_distance();
+    }
+  }
+  if(selection_state){
+    handle_up_down(4);
+  }
+  if (Button_IsDown(left_up)) {
+    left_up_wasdown = true;
+  }
+  if (Button_IsDown(left_down)) {
+    left_down_wasdown = true;
+  }
+
+  if (left_up_wasdown && Button_IsUP(left_up)) {
+    left_up_wasdown = false;
+    update = true;
+    if(!selection_state){
+      selection_state = true;
+      return;
+    }
+    if(selection_state == true && pos == 1){
+      current_Page = auto_vh;
+      menu_pos = 1;
+      tft.fillScreen(ST77XX_BLACK);
+      selection_state = false;
+    }
+    if(selection_state == true && pos == 2){
+      current_Page = vertical;
+      menu_pos = 2;
+      tft.fillScreen(ST77XX_BLACK);
+      selection_state = false;
+    }
+    if(selection_state == true && pos == 3){
+      current_Page = horizon;
+      menu_pos = 3;
+      tft.fillScreen(ST77XX_BLACK);
+      selection_state = false;
+    }
+    if(selection_state == true && pos == 4){
+      current_Page = absolute;
+      menu_pos = 4;
+      tft.fillScreen(ST77XX_BLACK);
+      selection_state = false;
+    }
+  }
+  if (left_down_wasdown && Button_IsUP(left_down)) {
+    left_down_wasdown = false;
+    update = true;
+    if(selection_state){
+      selection_state = false;
+      return;
+    }
+    current_Page = modemenu;
+    menu_pos = 1;
+    tft.fillScreen(ST77XX_BLACK);
   }
 }
 
@@ -370,6 +437,9 @@ void angle_diff(){
     left_down_wasdown = false;
     update = true;
     sto_count = 0;
+    current_Page = modemenu;
+    menu_pos = 2;
+    tft.fillScreen(ST77XX_BLACK);
     Serial.println("cancel pressed!");
   }
 }
@@ -571,13 +641,18 @@ void get_draw_live_angle(){
   }
 }
 void draw_options_distance() {
-  int x = (280 - calculateLength("all|") - calculateLength("Distance|") - calculateLength("angle")) / 2;
+  int x = (280 - calculateLength("Auto|") - calculateLength("Vert|") - calculateLength("Hori|") -calculateLength("Abs")) / 2;
   int y = 220;
 
   tft.setCursor(x, y);
   tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
+  if(selection_state){
+    uint8_t color =  ST77XX_BLUE;
+  } else{
+    uint8_t color = ST77XX_RED;
+  }
   if (menu_pos == 1) {
-    tft.fillRect(x, 236, calculateLength("all"), 3, ST77XX_RED);
+    tft.fillRect(x, 236, calculateLength("all"), 3, color);
     x += calculateLength("all|");
     tft.fillRect(x, 236, calculateLength("distance"), 3, ST77XX_BLACK);
     x += calculateLength("Distance|");
@@ -586,7 +661,7 @@ void draw_options_distance() {
   if (menu_pos == 2) {
     tft.fillRect(x, 236, calculateLength("all"), 3, ST77XX_BLACK);
     x += calculateLength("all|");
-    tft.fillRect(x, 236, calculateLength("distance"), 3, ST77XX_RED);
+    tft.fillRect(x, 236, calculateLength("distance"), 3, color);
     x += calculateLength("Distance|");
     tft.fillRect(x, 236, calculateLength("angle"), 3, ST77XX_BLACK);
   }
@@ -595,7 +670,14 @@ void draw_options_distance() {
     x += calculateLength("all|");
     tft.fillRect(x, 236, calculateLength("distance"), 3, ST77XX_BLACK);
     x += calculateLength("Distance|");
-    tft.fillRect(x, 236, calculateLength("angle"), 3, ST77XX_RED);
+    tft.fillRect(x, 236, calculateLength("angle"), 3, color);
+  }
+  if (menu_pos == 4) {
+    tft.fillRect(x, 236, calculateLength("all"), 3, ST77XX_BLACK);
+    x += calculateLength("all|");
+    tft.fillRect(x, 236, calculateLength("distance"), 3, ST77XX_BLACK);
+    x += calculateLength("Distance|");
+    tft.fillRect(x, 236, calculateLength("angle"), 3, color);
   }
   tft.print("All|");
   tft.print("Distance|");
