@@ -303,6 +303,14 @@ void angle_diff(){
       drawHeader("Angle menu", ST77XX_WHITE, ST77XX_RED);
     }
   }
+
+  if (Button_IsDown(right_up)) {
+    right_up_wasdown = true;
+  }
+  if (Button_IsDown(right_down)) {
+    right_down_wasdown = true;
+  }
+
   if (Button_IsDown(left_up)) {
     left_up_wasdown = true;
   }
@@ -310,6 +318,26 @@ void angle_diff(){
     left_down_wasdown = true;
   }
 
+
+  if (right_up_wasdown && Button_IsUP(right_up)) {
+    right_up_wasdown = false;
+    update = true;
+    sto_count +=1;
+    if(sto_count == 1){
+    roll_sto1 = roll;
+    pitch_sto1 = pitch;
+    yaw_sto1 = yaw;
+    }
+    if(sto_count == 2){
+      roll_sto2 = roll;
+      pitch_sto2 = pitch;
+      yaw_sto2 = yaw;
+      }
+  
+  }
+  if (right_down_wasdown && Button_IsUP(right_down)) {
+    right_down_wasdown = false
+  }
 
   if (left_up_wasdown && Button_IsUP(left_up)) {
     left_up_wasdown = false;
@@ -435,7 +463,7 @@ void get_draw_live_angle(){
   int x = 20;
   int y = 36;
 
-
+  if(sto_count == 0){
   tft.setCursor(x, y);
   tft.setTextSize(2);
   tft.print("Pitch: ");
@@ -461,6 +489,14 @@ void get_draw_live_angle(){
   tft.setCursor(x, y);
   tft.print(yaw);
   tft.print("     ");
+  }
+
+  if(sto_count == 1){
+
+  }
+  if(sto_count == 2){
+
+  }
 }
 void draw_options_distance() {
   int x = (280 - calculateLength("all|") - calculateLength("Distance|") - calculateLength("angle")) / 2;
