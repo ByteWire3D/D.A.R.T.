@@ -87,6 +87,10 @@ float roll_sto2;
 float pitch_sto2;
 float yaw_sto2;
 
+float diff_roll;
+float diff_pitch;
+float diff_yaw;
+
 int temprature = 0;
 bool update = true;
 
@@ -332,11 +336,16 @@ void angle_diff(){
       roll_sto2 = roll;
       pitch_sto2 = pitch;
       yaw_sto2 = yaw;
+    }
+    if(sto_count == 3){
+        sto_count = 0;
       }
   
   }
   if (right_down_wasdown && Button_IsUP(right_down)) {
     right_down_wasdown = false
+    sto_count = 0;
+    update = true;
   }
 
   if (left_up_wasdown && Button_IsUP(left_up)) {
@@ -353,6 +362,9 @@ void angle_diff(){
       pitch_sto2 = pitch;
       yaw_sto2 = yaw;
       }
+    if(sto_count == 3){
+      sto_count = 0;
+    }
   }
   if (left_down_wasdown && Button_IsUP(left_down)) {
     left_down_wasdown = false;
@@ -470,7 +482,7 @@ void get_draw_live_angle(){
   x = 20 + calculateLength("Pitch: ");
   tft.setCursor(x, y);
   tft.print(pitch);
-  tft.print("    ");
+  tft.print("        ");
   y += 24;
   x = 20;
   tft.setCursor(x, y);
@@ -479,7 +491,7 @@ void get_draw_live_angle(){
   x = 20 + calculateLength("Roll: ");
   tft.setCursor(x, y);
   tft.print(roll);
-  tft.print("     ");
+  tft.print("        ");
   y += 24;
   x = 20;
   tft.setCursor(x, y);
@@ -488,14 +500,74 @@ void get_draw_live_angle(){
   x = 20 + calculateLength("Yaw: ");
   tft.setCursor(x, y);
   tft.print(yaw);
-  tft.print("     ");
+  tft.print("        ");
   }
 
   if(sto_count == 1){
+    diff_roll = abs(roll - roll_sto1);
+    diff_pitch = abs(pitch - pitch_sto1);
+    diff_yaw = abs(yaw - yaw_sto1); 
 
+    tft.setCursor(x, y);
+    tft.setTextSize(2);
+    tft.print("Diff Pitch: ");
+    x = 20 + calculateLength("Diff Pitch: ");
+    tft.setCursor(x, y);
+    tft.print(diff_pitch);
+    tft.print("    ");
+    y += 24;
+    x = 20;
+    tft.setCursor(x, y);
+    tft.setTextSize(2);
+    tft.print("Diff Roll: ");
+    x = 20 + calculateLength("Diff Roll: ");
+    tft.setCursor(x, y);
+    tft.print(diff_roll);
+    tft.print("     ");
+    y += 24;
+    x = 20;
+    tft.setCursor(x, y);
+    tft.setTextSize(2);
+    tft.print("Diff Yaw: ");
+    x = 20 + calculateLength("Diff Yaw: ");
+    tft.setCursor(x, y);
+    tft.print(diff_yaw);
+    tft.print("     ");
   }
   if(sto_count == 2){
+    diff_roll = abs(roll_sto2 - roll_sto1);
+    diff_pitch = abs(pitch_sto2 - pitch_sto1);
+    diff_yaw = abs(yaw_sto2 - yaw_sto1); 
 
+    diff_roll = abs(roll - roll_sto1);
+    diff_pitch = abs(pitch - pitch_sto1);
+    diff_yaw = abs(yaw - yaw_sto1); 
+
+    tft.setCursor(x, y);
+    tft.setTextSize(2);
+    tft.print("Mes Diff Pitch: ");
+    x = 20 + calculateLength("Mes Diff Pitch: ");
+    tft.setCursor(x, y);
+    tft.print(diff_pitch);
+    tft.print("    ");
+    y += 24;
+    x = 20;
+    tft.setCursor(x, y);
+    tft.setTextSize(2);
+    tft.print("Mes Diff Roll: ");
+    x = 20 + calculateLength("Mes Diff Roll: ");
+    tft.setCursor(x, y);
+    tft.print(diff_roll);
+    tft.print("     ");
+    y += 24;
+    x = 20;
+    tft.setCursor(x, y);
+    tft.setTextSize(2);
+    tft.print("Mes Diff Yaw: ");
+    x = 20 + calculateLength("Mes Diff Yaw: ");
+    tft.setCursor(x, y);
+    tft.print(diff_yaw);
+    tft.print("     ");
   }
 }
 void draw_options_distance() {
