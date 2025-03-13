@@ -205,6 +205,7 @@ void mode_menu() {
       draw_modemenu(menu_pos);
     }
   }
+
   handle_up_down(3);
   if (Button_IsDown(left_up)) {
     left_up_wasdown = true;
@@ -212,7 +213,6 @@ void mode_menu() {
   if (Button_IsDown(left_down)) {
     left_down_wasdown = true;
   }
-
 
   if (left_up_wasdown && Button_IsUP(left_up)) {
     left_up_wasdown = false;
