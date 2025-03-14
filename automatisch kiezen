@@ -1,0 +1,38 @@
+
+
+float getPerpendicularDistance() {
+  // Lees de LiDAR afstand 
+  float lidarDistance = sensor.read();
+  
+  // Lees de roll, pitch, heading van de  sensor
+  float roll = bno.getVector(Adafruit_BNO055::VECTOR_EULER).x();    // domme gedoe uit die test files, maar werkt als t goed is wel
+  float pitch = bno.getVector(Adafruit_BNO055::VECTOR_EULER).y();
+  float heading = bno.getVector(Adafruit_BNO055::VECTOR_EULER).z();
+
+  // Kies de dominante hoek: als roll of pitch groter is dan drempelwaarde 5, gebruiken we die, drempelwaarde kan aangepast worden, is nu 5 zodat ie niet de hele tijd spaced
+
+  if (abs(roll) > abs(pitch) && abs(roll) > 5) {
+    // Gebruik roll voor de loodrechte afstandsberekening
+    float angleInRadians = radians(roll);  // Zet de roll in radialen
+    return lidarDistance * cos(angleInRadians);
+  } 
+  else if (abs(pitch) > 5) {
+    // Gebruik pitch voor de loodrechte afstandsberekening
+    float angleInRadians = radians(pitch);  // Zet de pitch in radianen
+    return lidarDistance * cos(angleInRadians);
+  }
+  else {
+    // Als roll en pitch klein zijn, neem de loodrechte afstand direct
+    return lidarDistance;
+  }
+}
+
+void loop() {
+  float perpendicularDistance = getPerpendicularDistance();
+  
+  Serial.print("Loodrechte afstand: ");
+  Serial.print(perpendicularDistance);
+  Serial.println(" mm");
+
+  delay(100);
+}
