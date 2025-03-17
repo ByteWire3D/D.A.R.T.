@@ -362,6 +362,101 @@ void auto_vh_menu() {
     tft.fillScreen(ST77XX_BLACK);
   }
 }
+float calc_auto(){
+  int16_t distance;
+
+  if (vl53.dataReady()) {
+    // new measurement for the taking!
+    distance = vl53.distance();
+    if (distance == -1) {
+      Serial.print(F("Couldn't get distance: "));
+      Serial.println(vl53.vl_status);
+      return;
+    }
+
+    vl53.clearInterrupt();
+  }
+
+  sensors_event_t event;
+  bno.getEvent(&event);
+
+  pitch = event.orientation.z;
+  roll = event.orientation.y;
+  yaw = event.orientation.x;
+  
+  float auto_distance;
+  if(pitch => 45){
+    auto_distance = distance * sin(pitch* 3,14/180);
+    return auto_distance;
+  }else{
+    auto_distance = distance * cos(pitch* 3,14/180);
+    return auto_distance;
+  }
+}
+float calc_vertical(){
+  if (vl53.dataReady()) {
+    // new measurement for the taking!
+    distance = vl53.distance();
+    if (distance == -1) {
+      Serial.print(F("Couldn't get distance: "));
+      Serial.println(vl53.vl_status);
+      return;
+    }
+
+    vl53.clearInterrupt();
+  }
+
+  sensors_event_t event;
+  bno.getEvent(&event);
+
+  pitch = event.orientation.z;
+  roll = event.orientation.y;
+  yaw = event.orientation.x;
+  
+  float auto_distance;
+  auto_distance = distance * sin(pitch* 3,14/180);
+  return auto_distance;
+}
+
+float calc_horizonal(){
+  if (vl53.dataReady()) {
+    // new measurement for the taking!
+    distance = vl53.distance();
+    if (distance == -1) {
+      Serial.print(F("Couldn't get distance: "));
+      Serial.println(vl53.vl_status);
+      return;
+    }
+
+    vl53.clearInterrupt();
+  }
+
+  sensors_event_t event;
+  bno.getEvent(&event);
+
+  pitch = event.orientation.z;
+  roll = event.orientation.y;
+  yaw = event.orientation.x;
+  
+  float auto_distance;
+  auto_distance = distance * cos(pitch* 3,14/180);
+  return auto_distance;
+}
+float calc_abs(){
+  if (vl53.dataReady()) {
+    // new measurement for the taking!
+    distance = vl53.distance();
+    if (distance == -1) {
+      Serial.print(F("Couldn't get distance: "));
+      Serial.println(vl53.vl_status);
+      return;
+    }
+
+    vl53.clearInterrupt();
+  }
+
+  return distance;
+}
 
 void angle_diff() {
   static uint32_t lastTime = 0;
